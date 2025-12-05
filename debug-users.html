@@ -102,6 +102,7 @@
             <button onclick="testAdminLogin()">🧪 Admin 로그인 테스트</button>
             <button onclick="testTaeul21Login()">🧪 taeul21 로그인 테스트</button>
             <button onclick="createDefaultAccounts()">➕ 기본 계정 생성</button>
+            <button onclick="updatePassword()">🔑 비밀번호 변경</button>
         </div>
 
         <h2>📊 전체 사용자 목록</h2>
@@ -136,6 +137,18 @@
             <div id="hashResult" class="test-result" style="display: none;">
                 <strong>입력:</strong> <span id="inputPassword"></span><br>
                 <strong>해시:</strong> <span id="outputHash"></span>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔑 비밀번호 변경</h3>
+            <p>특정 사용자의 비밀번호를 변경합니다.</p>
+            <input type="text" id="updateUsername" placeholder="아이디 (예: taeul21)" 
+                   style="padding: 8px; width: 200px; margin-right: 10px;">
+            <input type="text" id="updatePassword" placeholder="새 비밀번호 (예: haewon2000!)" 
+                   style="padding: 8px; width: 200px; margin-right: 10px;">
+            <button onclick="updatePassword()">비밀번호 변경</button>
+            <div id="updateResult" class="test-result" style="display: none; margin-top: 10px;">
             </div>
         </div>
 
@@ -385,6 +398,79 @@
             }
         }
 
+        // 비밀번호 변경 함수
+        async function updatePassword() {
+            const username = document.getElementById('updateUsername').value.trim();
+            const newPassword = document.getElementById('updatePassword').value.trim();
+            const resultDiv = document.getElementById('updateResult');
+            
+            if (!username || !newPassword) {
+                alert('아이디와 새 비밀번호를 모두 입력하세요.');
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<strong>🔄 비밀번호 변경 중...</strong>';
+            
+            try {
+                // 1. 사용자 찾기
+                const response = await fetch('tables/users?limit=1000');
+                if (!response.ok) throw new Error('사용자 목록을 불러올 수 없습니다.');
+                
+                const data = await response.json();
+                const users = data.data || [];
+                const user = users.find(u => u.username === username);
+                
+                if (!user) {
+                    resultDiv.innerHTML = `
+                        <strong>❌ 사용자를 찾을 수 없습니다</strong><br>
+                        입력한 아이디: ${username}<br><br>
+                        "기본 계정 생성" 버튼으로 계정을 먼저 생성하세요.
+                    `;
+                    resultDiv.style.borderLeft = '4px solid #C8102E';
+                    return;
+                }
+                
+                // 2. 새 비밀번호 해시화
+                const hashedPassword = simpleHash(newPassword);
+                
+                // 3. 비밀번호 업데이트 (PATCH 사용)
+                const updateResponse = await fetch(`tables/users/${user.id}`, {
+                    method: 'PATCH',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        password: hashedPassword
+                    })
+                });
+                
+                if (!updateResponse.ok) {
+                    throw new Error('비밀번호 업데이트에 실패했습니다.');
+                }
+                
+                const updatedUser = await updateResponse.json();
+                
+                resultDiv.innerHTML = `
+                    <strong>✅ 비밀번호 변경 완료!</strong><br><br>
+                    <strong>계정 정보:</strong><br>
+                    • 아이디: ${username}<br>
+                    • 새 비밀번호: ${newPassword}<br>
+                    • 비밀번호 해시: ${hashedPassword}<br>
+                    • 이름: ${user.name}<br>
+                    • 활성 상태: ${user.active ? '활성' : '비활성'}<br><br>
+                    <em>이제 새 비밀번호로 로그인할 수 있습니다.</em>
+                `;
+                resultDiv.style.borderLeft = '4px solid #4CAF50';
+                
+                // 사용자 목록 새로고침
+                setTimeout(loadUsers, 1000);
+                
+            } catch (error) {
+                console.error('비밀번호 변경 오류:', error);
+                resultDiv.innerHTML = `<strong>❌ 오류 발생:</strong><br>${error.message}`;
+                resultDiv.style.borderLeft = '4px solid #C8102E';
+            }
+        }
+
         // 페이지 로드 시 사용자 목록 로드
         window.addEventListener('DOMContentLoaded', () => {
             loadUsers();
@@ -392,6 +478,10 @@
             // "password"의 기본 해시값 표시
             document.getElementById('testPassword').value = 'password';
             testHash();
+            
+            // 비밀번호 변경 필드에 사용자가 원하는 값 미리 입력
+            document.getElementById('updateUsername').value = 'taeul21';
+            document.getElementById('updatePassword').value = 'haewon2000!';
         });
     </script>
 </body>
