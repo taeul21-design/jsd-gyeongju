@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users Debug - 증산도 경주 노서도장</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #C8102E;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #C8102E;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .admin-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .inactive-badge {
+            background: #999;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .test-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff;
+            border-left: 4px solid #C8102E;
+        }
+        button {
+            background: #C8102E;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #A00C28;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Users 테이블 디버그</h1>
+        
+        <div class="info">
+            <strong>ℹ️ 이 페이지는 디버깅용입니다.</strong><br>
+            Users 테이블의 모든 사용자 정보를 확인하고, 로그인 테스트를 할 수 있습니다.
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <button onclick="loadUsers()">🔄 사용자 목록 새로고침</button>
+            <button onclick="testAdminLogin()">🧪 Admin 로그인 테스트</button>
+            <button onclick="testTaeul21Login()">🧪 taeul21 로그인 테스트</button>
+            <button onclick="createDefaultAccounts()">➕ 기본 계정 생성</button>
+        </div>
+
+        <h2>📊 전체 사용자 목록</h2>
+        <div id="userCount" style="margin-bottom: 10px; font-weight: 600;"></div>
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>아이디</th>
+                    <th>이름</th>
+                    <th>연락처</th>
+                    <th>비밀번호 해시</th>
+                    <th>관리자</th>
+                    <th>활성</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 40px;">
+                        로딩 중...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="test-section">
+            <h3>🧪 비밀번호 해시 테스트</h3>
+            <p>simpleHash 함수로 비밀번호를 해시화합니다.</p>
+            <input type="text" id="testPassword" placeholder="테스트할 비밀번호 입력" 
+                   style="padding: 8px; width: 300px; margin-right: 10px;">
+            <button onclick="testHash()">해시 계산</button>
+            <div id="hashResult" class="test-result" style="display: none;">
+                <strong>입력:</strong> <span id="inputPassword"></span><br>
+                <strong>해시:</strong> <span id="outputHash"></span>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 로그인 테스트 결과</h3>
+            <div id="loginTestResult" class="test-result">
+                테스트 버튼을 클릭하여 로그인을 시험해보세요.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple Hash Function (main.js와 동일)
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return hash.toString(16);
+        }
+
+        // 사용자 목록 로드
+        async function loadUsers() {
+            try {
+                const response = await fetch('tables/users?limit=1000');
+                if (!response.ok) throw new Error('사용자 목록을 불러올 수 없습니다.');
+                
+                const data = await response.json();
+                const users = data.data || [];
+                
+                document.getElementById('userCount').textContent = 
+                    `총 ${users.length}명의 사용자가 등록되어 있습니다.`;
+                
+                const tbody = document.getElementById('usersTableBody');
+                
+                if (users.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 40px; color: #999;">
+                                등록된 사용자가 없습니다. "기본 계정 생성" 버튼을 클릭하세요.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                tbody.innerHTML = users.map(user => `
+                    <tr>
+                        <td style="font-size: 12px;">${user.id.substring(0, 8)}...</td>
+                        <td><strong>${user.username}</strong></td>
+                        <td>${user.name}</td>
+                        <td>${user.phone || '-'}</td>
+                        <td style="font-family: monospace; font-size: 12px;">${user.password}</td>
+                        <td>${user.is_admin ? '<span class="admin-badge">관리자</span>' : '-'}</td>
+                        <td>${user.active ? '✅' : '<span class="inactive-badge">비활성</span>'}</td>
+                    </tr>
+                `).join('');
+                
+            } catch (error) {
+                console.error('사용자 로드 오류:', error);
+                document.getElementById('usersTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #C8102E;">
+                            ❌ 오류: ${error.message}
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // 비밀번호 해시 테스트
+        function testHash() {
+            const password = document.getElementById('testPassword').value;
+            if (!password) {
+                alert('비밀번호를 입력하세요.');
+                return;
+            }
+            
+            const hash = simpleHash(password);
+            document.getElementById('inputPassword').textContent = password;
+            document.getElementById('outputHash').textContent = hash;
+            document.getElementById('hashResult').style.display = 'block';
+        }
+
+        // Admin 로그인 테스트
+        async function testAdminLogin() {
+            await testLogin('admin', 'password');
+        }
+
+        // taeul21 로그인 테스트
+        async function testTaeul21Login() {
+            await testLogin('taeul21', 'password');
+        }
+
+        // 로그인 테스트 함수
+        async function testLogin(username, password) {
+            const resultDiv = document.getElementById('loginTestResult');
+            resultDiv.innerHTML = `<strong>🔄 테스트 중...</strong><br>아이디: ${username}<br>비밀번호: ${password}`;
+            
+            try {
+                const response = await fetch('tables/users?limit=1000');
+                if (!response.ok) throw new Error('로그인 테스트 실패');
+                
+                const data = await response.json();
+                const users = data.data || [];
+                
+                const hashedPassword = simpleHash(password);
+                console.log('입력 비밀번호:', password);
+                console.log('해시된 비밀번호:', hashedPassword);
+                
+                const user = users.find(u => {
+                    console.log(`검사: ${u.username}, 해시: ${u.password}, 활성: ${u.active}`);
+                    return u.username === username && u.password === hashedPassword && u.active === true;
+                });
+                
+                if (user) {
+                    resultDiv.innerHTML = `
+                        <strong>✅ 로그인 성공!</strong><br>
+                        아이디: ${username}<br>
+                        비밀번호: ${password}<br>
+                        비밀번호 해시: ${hashedPassword}<br>
+                        이름: ${user.name}<br>
+                        관리자: ${user.is_admin ? '예' : '아니오'}<br>
+                        활성 상태: ${user.active ? '활성' : '비활성'}
+                    `;
+                    resultDiv.style.borderLeft = '4px solid #4CAF50';
+                } else {
+                    resultDiv.innerHTML = `
+                        <strong>❌ 로그인 실패</strong><br>
+                        아이디: ${username}<br>
+                        비밀번호: ${password}<br>
+                        비밀번호 해시: ${hashedPassword}<br>
+                        <br>
+                        <strong>가능한 원인:</strong><br>
+                        1. 해당 사용자가 존재하지 않음<br>
+                        2. 비밀번호가 일치하지 않음<br>
+                        3. 계정이 비활성 상태<br>
+                        <br>
+                        DB에서 찾은 사용자 수: ${users.length}명<br>
+                        해당 username의 사용자: ${users.find(u => u.username === username) ? '존재함' : '없음'}
+                    `;
+                    resultDiv.style.borderLeft = '4px solid #C8102E';
+                    
+                    // 해당 username이 있는지 확인
+                    const existingUser = users.find(u => u.username === username);
+                    if (existingUser) {
+                        resultDiv.innerHTML += `<br><br><strong>DB에 저장된 정보:</strong><br>`;
+                        resultDiv.innerHTML += `비밀번호 해시: ${existingUser.password}<br>`;
+                        resultDiv.innerHTML += `활성 상태: ${existingUser.active}<br>`;
+                        resultDiv.innerHTML += `해시 일치: ${existingUser.password === hashedPassword ? '✅' : '❌'}`;
+                    }
+                }
+                
+            } catch (error) {
+                console.error('로그인 테스트 오류:', error);
+                resultDiv.innerHTML = `<strong>❌ 오류 발생:</strong><br>${error.message}`;
+                resultDiv.style.borderLeft = '4px solid #C8102E';
+            }
+        }
+
+        // 기본 계정 생성
+        async function createDefaultAccounts() {
+            if (!confirm('admin과 taeul21 계정을 생성하시겠습니까?\n\n기존 계정이 있으면 중복 오류가 발생할 수 있습니다.')) {
+                return;
+            }
+            
+            const resultDiv = document.getElementById('loginTestResult');
+            resultDiv.innerHTML = '<strong>🔄 계정 생성 중...</strong>';
+            
+            try {
+                // 비밀번호 "password"를 해시화
+                const hashedPassword = simpleHash('password');
+                
+                // Admin 계정 생성
+                const adminData = {
+                    username: 'admin',
+                    password: hashedPassword,
+                    name: '관리자',
+                    phone: '010-0000-0000',
+                    is_admin: true,
+                    active: true
+                };
+                
+                // taeul21 계정 생성
+                const taeul21Data = {
+                    username: 'taeul21',
+                    password: hashedPassword,
+                    name: '김정연',
+                    phone: '010-0000-0001',
+                    is_admin: true,
+                    active: true
+                };
+                
+                // Admin 계정 생성 시도
+                try {
+                    const adminResponse = await fetch('tables/users', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(adminData)
+                    });
+                    
+                    if (adminResponse.ok) {
+                        console.log('✅ Admin 계정 생성 성공');
+                    } else {
+                        console.log('⚠️ Admin 계정 생성 실패 (이미 존재할 수 있음)');
+                    }
+                } catch (e) {
+                    console.error('Admin 계정 생성 오류:', e);
+                }
+                
+                // taeul21 계정 생성 시도
+                try {
+                    const taeul21Response = await fetch('tables/users', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(taeul21Data)
+                    });
+                    
+                    if (taeul21Response.ok) {
+                        console.log('✅ taeul21 계정 생성 성공');
+                    } else {
+                        console.log('⚠️ taeul21 계정 생성 실패 (이미 존재할 수 있음)');
+                    }
+                } catch (e) {
+                    console.error('taeul21 계정 생성 오류:', e);
+                }
+                
+                resultDiv.innerHTML = `
+                    <strong>✅ 계정 생성 완료!</strong><br><br>
+                    생성된 계정:<br>
+                    1. admin / password (관리자)<br>
+                    2. taeul21 / password (관리자)<br><br>
+                    비밀번호 해시: ${hashedPassword}<br><br>
+                    <em>사용자 목록을 새로고침하여 확인하세요.</em>
+                `;
+                resultDiv.style.borderLeft = '4px solid #4CAF50';
+                
+                // 자동으로 목록 새로고침
+                setTimeout(loadUsers, 1000);
+                
+            } catch (error) {
+                console.error('계정 생성 오류:', error);
+                resultDiv.innerHTML = `<strong>❌ 오류 발생:</strong><br>${error.message}`;
+                resultDiv.style.borderLeft = '4px solid #C8102E';
+            }
+        }
+
+        // 페이지 로드 시 사용자 목록 로드
+        window.addEventListener('DOMContentLoaded', () => {
+            loadUsers();
+            
+            // "password"의 기본 해시값 표시
+            document.getElementById('testPassword').value = 'password';
+            testHash();
+        });
+    </script>
+</body>
+</html>

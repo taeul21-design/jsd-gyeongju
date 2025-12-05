@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#C8102E">
+    
+    <title>증산도 경주 노서도장</title>
+    <meta name="description" content="후천가을 문명시대를 준비하는 증산도 경주 노서도장 - 증산도 소개, 입도 안내, 도장 소식">
+    
+    <!-- Open Graph / SNS 공유 -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="증산도 경주 노서도장">
+    <meta property="og:description" content="후천가을 문명시대를 준비하는 증산도 경주 노서도장">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1464207687429-7505649dae38?w=1200">
+    
+    <!-- PWA 매니페스트 -->
+    <link rel="manifest" href="./manifest.json">
+    
+    <!-- iOS PWA 지원 - 로컬 아이콘 사용 -->
+    <meta name="apple-mobile-web-app-title" content="경주노서도장">
+    <link rel="apple-touch-icon" href="./images/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./images/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="./images/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="./images/icon-128x128.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./images/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./images/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="./images/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="384x384" href="./images/icon-384x384.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="./images/icon-512x512.png">
+    
+    <!-- 파비콘 - 로컬 아이콘 사용 -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/icon-72x72.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/icon-72x72.png">
+    
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/music-player.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Kakao SDK -->
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h+gjcca3QqW+4tWoz8rZCwdqM1PHM6JXH4LdNdm9AYVkbVjrfcxY4ahXP" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="#home" class="logo">
+                    <i class="fas fa-yin-yang"></i>
+                    <h1>증산도 경주 노서도장</h1>
+                </a>
+                <button class="kakao-share-btn" onclick="shareKakao()" title="카카오톡으로 공유하기">
+                    <span class="kakao-icon">💬</span>
+                    <span class="kakao-text">공유</span>
+                </button>
+                <nav class="nav">
+                    <button class="nav-toggle" id="navToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <ul class="nav-menu" id="navMenu">
+                        <li><a href="#home" class="nav-link active">홈</a></li>
+                        <li><a href="#about" class="nav-link">증산도 소개</a></li>
+                        <li><a href="#welcome" class="nav-link">증산도는 처음이지</a></li>
+                        <li><a href="#join" class="nav-link">입도 안내</a></li>
+                        <li><a href="#dojang-news" class="nav-link">도장소식</a></li>
+                        <li><a href="#bookclub" class="nav-link">황금독서클럽</a></li>
+                        <li><a href="#stb" class="nav-link">상생방송</a></li>
+                        <li><a href="#healing" class="nav-link">동방신선학교</a></li>
+                        <li><a href="#music" class="nav-link">증산도 성곡</a></li>
+                        <li><a href="#guestbook" class="nav-link">방명록</a></li>
+                        <li><a href="#news" class="nav-link">게시판</a></li>
+                        <li id="authButtons">
+                            <button class="btn-secondary btn-sm" onclick="openLoginModal()">
+                                <i class="fas fa-sign-in-alt"></i> 로그인
+                            </button>
+                            <button class="btn-primary btn-sm" onclick="openRegisterModal()" style="margin-left: 0.5rem;">
+                                <i class="fas fa-user-plus"></i> 회원가입
+                            </button>
+                        </li>
+                        <li id="userInfo" style="display: none;">
+                            <span class="user-name"><i class="fas fa-user"></i> <span id="displayName"></span></span>
+                            <button class="btn-secondary btn-sm" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i> 로그아웃
+                            </button>
+                        </li>
+                        <li id="writeButton" style="display: none;">
+                            <button class="btn-primary" onclick="openPostModal()">
+                                <i class="fas fa-pen"></i> 글쓰기
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 배너 -->
+    <section id="home" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="hero-title">후천가을 문명시대를 준비하는</h2>
+                <h3 class="hero-subtitle">증산도 경주 노서도장</h3>
+                <p class="hero-description">
+                    지금은 온 천하가 가을 운수의 시작으로 들어서고 있느니라.<br>
+                    너희들은 오직 정의(正義)와 일심(一心)에 힘써 만세의 큰복을 구하라.<br>
+                    이 때는 천지성공 시대(天地成功時代)니라.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#about" class="btn-hero-primary">증산도 알아보기</a>
+                    <a href="https://welcome.jsd.or.kr/" target="_blank" rel="noopener noreferrer" class="btn-hero-secondary">
+                        증산도는 처음이지 <i class="fas fa-external-link-alt" style="font-size: 0.9em; margin-left: 0.3rem;"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 게시판 바로가기 -->
+    <section class="section board-quick-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">게시판</h2>
+                <p class="section-subtitle">소식과 정보를 나누는 공간</p>
+            </div>
+            <div class="board-quick-grid">
+                <a href="#news" class="board-quick-card" data-category="공지사항" onclick="filterCategoryFromHome('공지사항')">
+                    <div class="board-icon" style="background: linear-gradient(135deg, #C62828, #E53935);">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h3>공지사항</h3>
+                    <p>도장의 중요한 공지사항을 확인하세요</p>
+                    <span class="board-badge">바로가기 →</span>
+                </a>
+                <a href="#news" class="board-quick-card" data-category="도장소식" onclick="filterCategoryFromHome('도장소식')">
+                    <div class="board-icon" style="background: linear-gradient(135deg, #1565C0, #1976D2);">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <h3>도장 소식</h3>
+                    <p>도장의 다양한 소식과 활동을 공유합니다</p>
+                    <span class="board-badge">바로가기 →</span>
+                </a>
+                <a href="#news" class="board-quick-card" data-category="행사사진" onclick="filterCategoryFromHome('행사사진')">
+                    <div class="board-icon" style="background: linear-gradient(135deg, #6A1B9A, #7B1FA2);">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <h3>행사사진</h3>
+                    <p>도장 행사와 모임의 사진을 감상하세요</p>
+                    <span class="board-badge">바로가기 →</span>
+                </a>
+                <a href="#news" class="board-quick-card" data-category="자유게시판" onclick="filterCategoryFromHome('자유게시판')">
+                    <div class="board-icon" style="background: linear-gradient(135deg, #E65100, #F57C00);">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>자유게시판</h3>
+                    <p>자유롭게 의견과 정보를 나누세요</p>
+                    <span class="board-badge">바로가기 →</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 황금독서클럽 멤버십 -->
+    <section class="section bookclub-membership-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">황금독서클럽 멤버십</h2>
+                <p class="section-subtitle">증산도 진리를 체계적으로 학습하세요</p>
+            </div>
+            <div class="membership-card-container">
+                <a href="https://www.goldenbookclub.net/select_plan" target="_blank" rel="noopener noreferrer" class="membership-card">
+                    <div class="membership-icon">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                    <h3>멤버십 가입하기</h3>
+                    <p class="membership-description">
+                        증산도 진리서를 체계적으로 학습하고<br>
+                        전국 도생들과 함께 성장하세요
+                    </p>
+                    <ul class="membership-benefits">
+                        <li><i class="fas fa-check-circle"></i> 도전(道典) 온라인 강의</li>
+                        <li><i class="fas fa-check-circle"></i> 증산도 핵심 도서 학습</li>
+                        <li><i class="fas fa-check-circle"></i> 전국 도생 교류 및 토론</li>
+                        <li><i class="fas fa-check-circle"></i> 개인별 학습 진도 관리</li>
+                    </ul>
+                    <span class="membership-badge">
+                        <i class="fas fa-external-link-alt"></i> 지금 가입하기
+                    </span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 증산도 소개 -->
+    <section id="about" class="section about-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">증산도 소개</h2>
+                <p class="section-subtitle">후천개벽과 상생의 가르침</p>
+            </div>
+            <div class="about-grid">
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3>증산도란?</h3>
+                    <p>후천개벽과 새로운 문명시대를 준비하는 종교입니다. 증산 상제님께서 상생의 원리로 인류의 새로운 문명을 열어가고 있습니다.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>상생의 가르침</h3>
+                    <p>서로 살리고 함께 번영하는 상생(相生)의 원리로 조화로운 세상을 만들어갑니다.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>후천개벽</h3>
+                    <p>선천 상극의 시대를 마감하고 후천 상생의 새 시대를 여는 우주적 변화의 시기입니다.</p>
+                </div>
+                <a href="https://www.jsd.or.kr/" target="_blank" rel="noopener noreferrer" class="about-card about-card-link">
+                    <div class="about-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>증산도 홈페이지</h3>
+                    <p>증산도 공식 홈페이지에서 더 많은 정보를 확인하세요.</p>
+                    <span class="external-link-badge">
+                        <i class="fas fa-external-link-alt"></i> 바로가기
+                    </span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 입도 안내 -->
+    <section id="join" class="section join-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">입도 안내</h2>
+                <p class="section-subtitle">증산도와 함께하는 방법</p>
+            </div>
+            <div class="join-steps">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>도장 방문 및 상담</h3>
+                    <p>도장을 직접 방문하시거나 전화로 상담을 받으실 수 있습니다.</p>
+                </div>
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>교리 학습</h3>
+                    <p>증산도의 핵심 교리와 수행법을 배우고 이해합니다.</p>
+                </div>
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>입도식 참여</h3>
+                    <p>입도식을 통해 정식으로 증산도 도생이 됩니다.</p>
+                </div>
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>정기 수행</h3>
+                    <p>도장에서 정기적으로 수행하며 신앙생활을 이어갑니다.</p>
+                </div>
+            </div>
+            <div class="contact-info">
+                <div class="contact-card">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h4>위치</h4>
+                    <p>경북 경주시 금성로 271, 3층(노서동)</p>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-phone"></i>
+                    <h4>문의</h4>
+                    <p><a href="tel:054-742-1691" style="color: inherit; text-decoration: none;">054-742-1691</a></p>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-clock"></i>
+                    <h4>운영시간</h4>
+                    <p>항상 열려있습니다</p>
+                </div>
+                <a href="https://www.jsd.or.kr/c/med/belief/982/984" target="_blank" rel="noopener noreferrer" class="contact-card contact-card-link">
+                    <i class="fas fa-book-open"></i>
+                    <h4>입도 안내 자세히 보기</h4>
+                    <p>증산도 공식 홈페이지에서 입도에 대한 자세한 내용을 확인하세요.</p>
+                    <span class="external-link-badge">
+                        <i class="fas fa-external-link-alt"></i> 바로가기
+                    </span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 증산도는 처음이지 섹션 -->
+    <section id="welcome" class="section welcome-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">증산도는 처음이지</h2>
+                <p class="section-subtitle">증산도를 처음 접하는 분들을 위한 입문 사이트</p>
+            </div>
+            
+            <div class="welcome-intro">
+                <div class="welcome-card featured">
+                    <div class="welcome-icon">
+                        <i class="fas fa-door-open"></i>
+                    </div>
+                    <h3>증산도는 처음이지란?</h3>
+                    <p>증산도를 처음 접하시는 분들을 위해 쉽고 재미있게 증산도의 핵심 진리를 소개하는 웰컴 사이트입니다. 
+                       증산도가 무엇인지, 어떤 가르침을 전하는지 친근하게 안내해드립니다.</p>
+                </div>
+            </div>
+
+            <div class="welcome-features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h4>쉬운 설명</h4>
+                    <p>복잡한 교리를 쉽고 이해하기 쉽게 풀어서 설명합니다</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h4>영상 콘텐츠</h4>
+                    <p>다양한 영상으로 증산도 진리를 재미있게 배웁니다</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h4>핵심 가르침</h4>
+                    <p>증산도의 핵심 진리와 가을개벽 소식을 전합니다</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h4>FAQ</h4>
+                    <p>증산도에 대해 궁금한 점들을 시원하게 답변합니다</p>
+                </div>
+            </div>
+
+            <div class="welcome-cta">
+                <div class="cta-content">
+                    <h3>증산도가 처음이신가요?</h3>
+                    <p>쉽고 재미있게 증산도의 진리를 만나보세요. 후천가을 문명시대를 여는 증산도의 가르침이 여러분을 기다립니다.</p>
+                    <div class="cta-buttons">
+                        <button onclick="confirmExternalLink('https://welcome.jsd.or.kr/', '증산도는 처음이지')" class="btn-welcome-primary">
+                            <i class="fas fa-external-link-alt"></i> 증산도는 처음이지 방문하기
+                        </button>
+                    </div>
+                </div>
+                <div class="cta-image">
+                    <i class="fas fa-hands-helping" style="font-size: 8rem; color: var(--accent-color); opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 도장소식 섹션 -->
+    <section id="dojang-news" class="section dojang-news-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">도장 소식</h2>
+                <p class="section-subtitle">경주 노서도장의 최신 소식을 전합니다</p>
+            </div>
+            
+            <div class="dojang-news-grid">
+                <div class="news-card">
+                    <div class="news-icon">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h3>정기 치성 안내</h3>
+                    <p class="news-time">매주 일요일 오전 10시 30분<br>매주 수요일 저녁 7시 30분</p>
+                    <p>함께 수행하며 진리를 배우실 분들의 참여를 환영합니다.</p>
+                </div>
+                
+                <div class="news-card">
+                    <div class="news-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3>태을주 수행 모임</h3>
+                    <p class="news-time">매주 토요일 오후 2시</p>
+                    <p>태을주 수행법을 배우고 함께 수행하는 시간입니다.</p>
+                </div>
+                
+                <div class="news-card">
+                    <div class="news-icon">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                    <h3>도전 강독 모임</h3>
+                    <p class="news-time">매월 첫째, 셋째 주 금요일 저녁 7시</p>
+                    <p>증산도 경전 도전을 함께 읽고 공부하는 시간입니다.</p>
+                </div>
+                
+                <div class="news-card">
+                    <div class="news-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>신규 도생 환영</h3>
+                    <p class="news-time">상시</p>
+                    <p>언제든지 도장 방문을 환영합니다. 친절하게 안내해 드립니다.</p>
+                </div>
+            </div>
+            
+            <div class="news-notice">
+                <div class="notice-header">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>참여 안내</h3>
+                </div>
+                <div class="notice-content">
+                    <p>• 모든 프로그램은 사전 예약 없이 자유롭게 참여 가능합니다.</p>
+                    <p>• 처음 오시는 분들은 10~15분 일찍 오시면 좋습니다.</p>
+                    <p>• 편안한 복장으로 참석하시면 됩니다.</p>
+                    <p>• 문의사항은 언제든지 전화 주세요: <a href="tel:054-742-1691" style="color: #C8102E; font-weight: 600;">054-742-1691</a></p>
+                </div>
+            </div>
+            
+            <div class="news-cta">
+                <h3>더 많은 소식을 확인하세요</h3>
+                <a href="#news" class="btn-news-primary">
+                    <i class="fas fa-newspaper"></i> 게시판 바로가기
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 황금독서클럽 섹션 -->
+    <section id="bookclub" class="section bookclub-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">황금독서클럽</h2>
+                <p class="section-subtitle">증산도 진리를 담은 도서 학습 커뮤니티</p>
+            </div>
+            
+            <div class="bookclub-intro">
+                <div class="bookclub-card featured">
+                    <div class="bookclub-icon">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                    <h3>황금독서클럽이란?</h3>
+                    <p>증산도 진리서와 관련 도서를 함께 읽고 학습하는 온라인 독서 커뮤니티입니다. 체계적인 교육 프로그램과 도생들의 소통 공간을 제공합니다.</p>
+                </div>
+            </div>
+
+            <div class="bookclub-features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h4>체계적 학습</h4>
+                    <p>증산도 진리서를 단계별로 학습할 수 있는 커리큘럼</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4>함께 토론</h4>
+                    <p>도생들과 함께 도서를 읽고 의견을 나누는 토론 공간</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h4>영상 강의</h4>
+                    <p>교리 해설 영상과 강의 자료 제공</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h4>학습 관리</h4>
+                    <p>개인별 학습 진도와 성취도 관리</p>
+                </div>
+            </div>
+
+            <div class="bookclub-cta">
+                <div class="cta-content">
+                    <h3>황금독서클럽에서 함께 공부하세요</h3>
+                    <p>증산도 진리를 깊이 있게 학습하고, 도생들과 소통하며 신앙의 깊이를 더해가세요.</p>
+                    <div class="cta-buttons">
+                        <button onclick="confirmExternalLink('https://www.goldenbookclub.net/', '황금독서클럽')" class="btn-bookclub-primary">
+                            <i class="fas fa-external-link-alt"></i> 황금독서클럽 방문하기
+                        </button>
+                        <button onclick="openBookclubInfo()" class="btn-bookclub-secondary">
+                            <i class="fas fa-info-circle"></i> 자세히 알아보기
+                        </button>
+                    </div>
+                </div>
+                <div class="cta-image">
+                    <i class="fas fa-book-open" style="font-size: 8rem; color: var(--accent-color); opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 상생방송 섹션 -->
+    <section id="stb" class="section stb-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">상생방송 STB</h2>
+                <p class="section-subtitle">증산도 진리와 인류 문화를 전하는 TV 방송</p>
+            </div>
+            
+            <div class="stb-intro">
+                <div class="stb-card featured">
+                    <div class="stb-icon">
+                        <i class="fas fa-tv"></i>
+                    </div>
+                    <h3>상생방송이란?</h3>
+                    <p>증산도 진리와 한민족의 역사·문화, 그리고 인류의 보편적 가치를 전하는 증산도 공식 TV 방송입니다. 24시간 온라인 실시간 방송과 다시보기 서비스를 제공합니다.</p>
+                </div>
+            </div>
+
+            <div class="stb-features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-broadcast-tower"></i>
+                    </div>
+                    <h4>실시간 방송</h4>
+                    <p>24시간 증산도 진리와 교육 프로그램을 실시간으로 시청</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <h4>다시보기</h4>
+                    <p>놓친 프로그램을 언제든지 VOD로 시청 가능</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <h4>다양한 콘텐츠</h4>
+                    <p>교육, 역사, 문화, 건강, 다큐멘터리 등 다채로운 프로그램</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h4>모바일 시청</h4>
+                    <p>PC, 스마트폰, 태블릿에서 자유롭게 시청</p>
+                </div>
+            </div>
+
+            <div class="stb-programs">
+                <h3 class="programs-title">주요 프로그램</h3>
+                <div class="programs-grid">
+                    <div class="program-card">
+                        <div class="program-icon">📺</div>
+                        <h4>도전 강독</h4>
+                        <p>증산도 경전 도전을 깊이 있게 학습</p>
+                    </div>
+                    <div class="program-card">
+                        <div class="program-icon">🌍</div>
+                        <h4>천지성공</h4>
+                        <p>증산도 핵심 진리 강의</p>
+                    </div>
+                    <div class="program-card">
+                        <div class="program-icon">📜</div>
+                        <h4>한국의 역사</h4>
+                        <p>우리 역사의 진실을 밝히다</p>
+                    </div>
+                    <div class="program-card">
+                        <div class="program-icon">🎬</div>
+                        <h4>특별 다큐멘터리</h4>
+                        <p>역사·문화 다큐멘터리</p>
+                    </div>
+                    <div class="program-card">
+                        <div class="program-icon">💊</div>
+                        <h4>생활 건강</h4>
+                        <p>건강한 삶을 위한 정보</p>
+                    </div>
+                    <div class="program-card">
+                        <div class="program-icon">🎵</div>
+                        <h4>태을주 수행</h4>
+                        <p>태을주 수행법 안내</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stb-cta">
+                <div class="cta-content">
+                    <h3>상생방송으로 진리를 배우세요</h3>
+                    <p>증산도 진리와 한민족의 역사·문화를 다양한 프로그램으로 만나보세요. 실시간 방송과 다시보기로 언제 어디서나 시청 가능합니다.</p>
+                    <div class="cta-buttons">
+                        <button onclick="confirmExternalLink('https://www.stb.co.kr/', '상생방송')" class="btn-stb-primary">
+                            <i class="fas fa-external-link-alt"></i> 상생방송 실시간 보기
+                        </button>
+                        <button onclick="openSTBInfo()" class="btn-stb-secondary">
+                            <i class="fas fa-info-circle"></i> 편성표 확인하기
+                        </button>
+                    </div>
+                </div>
+                <div class="cta-image">
+                    <i class="fas fa-satellite-dish" style="font-size: 8rem; color: var(--primary-color); opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 동방신선학교 섹션 -->
+    <section id="healing" class="section healing-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">동방신선학교</h2>
+                <p class="section-subtitle">온라인으로 배우는 증산도 태을주 수행</p>
+            </div>
+            
+            <div class="healing-intro">
+                <div class="healing-card featured">
+                    <div class="healing-icon">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h3>동방신선학교란?</h3>
+                    <p>상생방송 STB에서 운영하는 온라인 태을주 수행 프로그램입니다. 
+                       언제 어디서나 편리하게 태을주 수행을 배우고, 함께 수행하며 심신의 건강과 영성을 키워갈 수 있습니다.</p>
+                </div>
+            </div>
+
+            <div class="healing-features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-om"></i>
+                    </div>
+                    <h4>태을주 수행</h4>
+                    <p>우주 생명의 근원인 태을주를 수행하는 방법을 배웁니다</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h4>온라인 교육</h4>
+                    <p>집에서 편안하게 온라인으로 수행법을 배울 수 있습니다</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h4>심신 건강</h4>
+                    <p>태을주 수행으로 몸과 마음의 건강을 증진시킵니다</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4>함께 수행</h4>
+                    <p>전국의 도생들과 함께 온라인으로 수행합니다</p>
+                </div>
+            </div>
+
+            <div class="healing-benefits">
+                <h3 class="benefits-title">태을주 수행의 효과</h3>
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🌟</div>
+                        <h4>정신 안정</h4>
+                        <p>마음의 평화와 안정을 찾습니다</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">💪</div>
+                        <h4>면역력 증진</h4>
+                        <p>신체 면역력이 강화됩니다</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🧘</div>
+                        <h4>기혈 순환</h4>
+                        <p>기와 혈의 흐름이 원활해집니다</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">✨</div>
+                        <h4>영성 개발</h4>
+                        <p>영적 깨달음을 얻게 됩니다</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="healing-cta">
+                <div class="cta-content">
+                    <h3>동방신선학교에서 태을주 수행을 시작하세요</h3>
+                    <p>온라인으로 편리하게 태을주 수행법을 배우고, 심신의 건강과 영성을 함께 키워가세요. 
+                       전국의 도생들과 함께하는 온라인 수행 프로그램에 참여하실 수 있습니다.</p>
+                    <div class="cta-buttons">
+                        <button onclick="confirmExternalLink('https://healing.stb.co.kr/', '동방신선학교')" class="btn-healing-primary">
+                            <i class="fas fa-external-link-alt"></i> 동방신선학교 방문하기
+                        </button>
+                    </div>
+                </div>
+                <div class="cta-image">
+                    <i class="fas fa-lotus" style="font-size: 8rem; color: var(--accent-color); opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 증산도 성곡 섹션 -->
+    <section id="music" class="section music-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-music"></i> 증산도 성곡
+                </h2>
+                <p class="section-subtitle">AI 창작곡과 수상곡으로 느끼는 증산도의 가르침</p>
+            </div>
+
+            <div class="music-intro">
+                <div class="music-card featured">
+                    <div class="music-icon">
+                        <i class="fas fa-compact-disc"></i>
+                    </div>
+                    <h3>증산도 성곡이란?</h3>
+                    <p>증산도의 가르침과 진리를 담은 아름다운 음악들입니다. 
+                       AI 기술로 창작된 현대적인 곡들과 수상곡들을 통해 증산도의 메시지를 음악으로 느껴보세요.</p>
+                </div>
+            </div>
+
+            <!-- 음악 플레이어 -->
+            <div class="music-player-container">
+                <div id="musicPlayerSection">
+                    <!-- 현재 재생 중인 곡 정보 -->
+                    <div class="now-playing" id="nowPlaying" style="display: none;">
+                        <div class="now-playing-info">
+                            <div class="now-playing-icon">
+                                <i class="fas fa-music fa-beat"></i>
+                            </div>
+                            <div class="now-playing-details">
+                                <div class="now-playing-title" id="currentSongTitle">-</div>
+                                <div class="now-playing-artist" id="currentSongArtist">-</div>
+                            </div>
+                        </div>
+                        <div class="now-playing-controls">
+                            <button class="control-btn" id="playPauseBtn" onclick="togglePlayPause()">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                            <button class="control-btn" onclick="stopMusic()">
+                                <i class="fas fa-stop"></i>
+                            </button>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progressBar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <div class="time-info">
+                                <span id="currentTime">0:00</span>
+                                <span id="totalTime">0:00</span>
+                            </div>
+                        </div>
+                        <audio id="audioPlayer" onended="onSongEnded()"></audio>
+                    </div>
+
+                    <!-- 음악 목록 -->
+                    <div class="music-list" id="musicList">
+                        <div class="music-list-header">
+                            <h3><i class="fas fa-list-ul"></i> 음악 목록</h3>
+                            <p>관리자가 업로드한 증산도 성곡을 들어보세요</p>
+                        </div>
+                        <div id="musicItems" class="music-items">
+                            <!-- 음악 목록이 여기에 동적으로 로드됩니다 -->
+                            <div class="empty-state">
+                                <i class="fas fa-compact-disc fa-3x"></i>
+                                <p>아직 등록된 음악이 없습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 음악 업로드 버튼 (관리자만) -->
+            <div class="music-upload-section" id="musicUploadSection" style="display: none;">
+                <button class="btn-primary" onclick="openMusicUploadModal()">
+                    <i class="fas fa-upload"></i> 음악 업로드
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 방명록 -->
+    <section id="guestbook" class="section guestbook-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-book"></i> 방명록
+                </h2>
+                <p class="section-subtitle">증산도 경주 노서도장을 방문해 주셔서 감사합니다. 자유롭게 소감을 남겨주세요.</p>
+            </div>
+
+            <!-- 방명록 작성 폼 -->
+            <div class="guestbook-form-card">
+                <h3 class="guestbook-form-title">
+                    <i class="fas fa-pen-fancy"></i> 방명록 남기기
+                </h3>
+                <form id="guestbookForm" class="guestbook-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="guestName">
+                                <i class="fas fa-user"></i> 이름 <span class="required">*</span>
+                            </label>
+                            <input type="text" id="guestName" placeholder="이름을 입력하세요" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="guestEmail">
+                                <i class="fas fa-envelope"></i> 이메일 (선택)
+                            </label>
+                            <input type="email" id="guestEmail" placeholder="example@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="guestLocation">
+                                <i class="fas fa-map-marker-alt"></i> 지역 (선택)
+                            </label>
+                            <input type="text" id="guestLocation" placeholder="예: 경주시, 서울시">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="guestMessage">
+                            <i class="fas fa-comment-dots"></i> 메시지 <span class="required">*</span>
+                        </label>
+                        <textarea 
+                            id="guestMessage" 
+                            rows="5" 
+                            placeholder="방문 소감이나 하고 싶은 말씀을 자유롭게 남겨주세요..."
+                            required
+                        ></textarea>
+                        <div class="char-counter">
+                            <span id="charCount">0</span> / 500자
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-guestbook-submit">
+                        <i class="fas fa-paper-plane"></i> 방명록 남기기
+                    </button>
+                </form>
+            </div>
+
+            <!-- 방명록 목록 -->
+            <div class="guestbook-list-header">
+                <h3>
+                    <i class="fas fa-comments"></i> 방명록 
+                    <span class="guestbook-count" id="guestbookCount">0</span>개
+                </h3>
+                <div class="guestbook-sort">
+                    <button class="sort-btn active" data-sort="latest">
+                        <i class="fas fa-clock"></i> 최신순
+                    </button>
+                    <button class="sort-btn" data-sort="likes">
+                        <i class="fas fa-heart"></i> 좋아요순
+                    </button>
+                </div>
+            </div>
+
+            <!-- 방명록 아이템 목록 -->
+            <div id="guestbookList" class="guestbook-list">
+                <!-- JavaScript로 동적 생성 -->
+                <div class="guestbook-empty">
+                    <i class="fas fa-inbox"></i>
+                    <p>아직 작성된 방명록이 없습니다.</p>
+                    <p>첫 번째 방명록을 남겨주세요!</p>
+                </div>
+            </div>
+
+            <!-- 더보기 버튼 -->
+            <div class="guestbook-load-more" id="guestbookLoadMore" style="display: none;">
+                <button class="btn-load-more" onclick="loadMoreGuestbook()">
+                    <i class="fas fa-chevron-down"></i> 더보기
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 게시판 -->
+    <section id="news" class="section posts-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">게시판</h2>
+                <p class="section-subtitle">공지사항, 도장소식, 행사사진, 자유게시판</p>
+            </div>
+            
+            <!-- 카테고리 필터 -->
+            <div class="category-filter-wrapper">
+                <div class="category-filter">
+                    <button class="filter-btn active" data-category="all">전체</button>
+                    <button class="filter-btn" data-category="공지사항">공지사항</button>
+                    <button class="filter-btn" data-category="도장소식">도장 소식</button>
+                    <button class="filter-btn" data-category="행사사진">행사사진</button>
+                    <button class="filter-btn" data-category="자유게시판">자유게시판</button>
+                </div>
+                <div class="category-write-btn" id="categoryWriteBtn" style="display: none;">
+                    <button class="btn-category-write" onclick="openPostModal()">
+                        <i class="fas fa-pen"></i> 이 카테고리에 글쓰기
+                    </button>
+                </div>
+            </div>
+
+            <!-- 게시글 목록 -->
+            <div id="postsList" class="posts-grid">
+                <!-- 게시글이 여기에 동적으로 로드됩니다 -->
+            </div>
+
+            <!-- 로딩 스피너 -->
+            <div id="loading" class="loading" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>로딩 중...</p>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div id="pagination" class="pagination">
+                <!-- 페이지네이션이 여기에 동적으로 로드됩니다 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>증산도 경주 노서도장</h3>
+                    <p>후천가을 문명시대를 준비하는 도량</p>
+                </div>
+                <div class="footer-section">
+                    <h4>바로가기</h4>
+                    <ul>
+                        <li><a href="#about">증산도 소개</a></li>
+                        <li><a href="https://www.jsd.or.kr/" target="_blank" rel="noopener noreferrer">증산도 홈페이지 <i class="fas fa-external-link-alt" style="font-size: 0.8em;"></i></a></li>
+                        <li><a href="#join">입도 안내</a></li>
+                        <li><a href="#dojang-news">도장소식</a></li>
+                        <li><a href="#bookclub">황금독서클럽</a></li>
+                        <li><a href="#stb">상생방송</a></li>
+                        <li><a href="https://healing.stb.co.kr/" target="_blank" rel="noopener noreferrer">동방신선학교 <i class="fas fa-external-link-alt" style="font-size: 0.8em;"></i></a></li>
+                        <li><a href="#news">게시판</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>문의</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> 경북 경주시 금성로 271, 3층(노서동)</p>
+                    <p><i class="fas fa-phone"></i> <a href="tel:054-742-1691" style="color: inherit; text-decoration: none;">054-742-1691</a></p>
+                    <p><i class="fas fa-envelope"></i> 언제든지 방문해주세요</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 증산도 경주 노서도장. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 글쓰기 모달 -->
+    <div id="postModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>새 글 작성</h2>
+                <button class="modal-close" onclick="closePostModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="postForm" class="post-form">
+                <div class="form-group">
+                    <label for="postCategory">카테고리</label>
+                    <select id="postCategory" required>
+                        <option value="">카테고리 선택</option>
+                        <option value="공지사항">공지사항</option>
+                        <option value="도장소식">도장 소식</option>
+                        <option value="행사사진">행사사진</option>
+                        <option value="자유게시판">자유게시판</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="postTitle">제목</label>
+                    <input type="text" id="postTitle" placeholder="제목을 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="postContent">내용</label>
+                    <textarea id="postContent" rows="10" placeholder="내용을 입력하세요" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-image"></i> 이미지 업로드 (선택사항)
+                    </label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="postImageFile" accept="image/*" onchange="handleImageUpload(event)" style="display: none;">
+                        <button type="button" class="btn-file-upload" onclick="document.getElementById('postImageFile').click()">
+                            <i class="fas fa-upload"></i> 이미지 선택하기
+                        </button>
+                        <span id="imageFileName" class="file-name"></span>
+                    </div>
+                    <div id="imagePreview" class="image-preview"></div>
+                    <small id="imageUploadInfo">
+                        <i class="fas fa-info-circle"></i> 
+                        <span id="imageUploadLimit">권장: 5MB 이하, JPG/PNG/GIF 형식</span>
+                    </small>
+                    <input type="hidden" id="postImageUrl">
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-link"></i> 또는 이미지 URL 입력
+                    </label>
+                    <input type="url" id="postImageUrlDirect" placeholder="https://example.com/image.jpg" onchange="handleImageUrlInput(event)">
+                    <small>외부 이미지 URL을 직접 입력할 수도 있습니다</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="postVideoUrl">
+                        <i class="fas fa-video"></i> 동영상 URL (선택사항)
+                    </label>
+                    <input type="url" id="postVideoUrl" placeholder="YouTube 또는 동영상 URL">
+                    <small>YouTube, Vimeo 등의 동영상 URL을 입력하세요</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-image"></i> 썸네일 이미지 업로드 (선택사항)
+                    </label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="postThumbnailFile" accept="image/*" onchange="handleThumbnailUpload(event)" style="display: none;">
+                        <button type="button" class="btn-file-upload" onclick="document.getElementById('postThumbnailFile').click()">
+                            <i class="fas fa-upload"></i> 썸네일 선택하기
+                        </button>
+                        <span id="thumbnailFileName" class="file-name"></span>
+                    </div>
+                    <div id="thumbnailPreview" class="image-preview"></div>
+                    <small>게시글 목록에 표시될 이미지</small>
+                    <input type="hidden" id="postThumbnail">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closePostModal()">취소</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-check"></i> 게시하기
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 글 상세보기 모달 -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="viewTitle"></h2>
+                <button class="modal-close" onclick="closeViewModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="post-meta">
+                    <span class="post-category-badge" id="viewCategory"></span>
+                    <span class="post-author"><i class="fas fa-user"></i> <span id="viewAuthor"></span></span>
+                    <span class="post-date"><i class="fas fa-calendar"></i> <span id="viewDate"></span></span>
+                    <span class="post-views"><i class="fas fa-eye"></i> <span id="viewViews"></span></span>
+                </div>
+                <div id="viewImageContainer" class="image-container" style="display: none;"></div>
+                <div id="viewVideoContainer" class="video-container" style="display: none;">
+                    <div id="viewVideo"></div>
+                </div>
+                <div id="viewContent" class="post-content-detail"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="admin-post-actions" id="adminPostActions" style="display: none;">
+                    <button class="btn-edit" onclick="editPost()">
+                        <i class="fas fa-edit"></i> 수정
+                    </button>
+                    <button class="btn-delete" onclick="deletePost()">
+                        <i class="fas fa-trash"></i> 삭제
+                    </button>
+                </div>
+                <button class="btn-secondary" onclick="closeViewModal()">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 황금독서클럽 상세 정보 모달 -->
+    <div id="bookclubModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>황금독서클럽 안내</h2>
+                <button class="modal-close" onclick="closeBookclubInfo()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="bookclub-detail">
+                    <h3><i class="fas fa-book"></i> 주요 도서</h3>
+                    <ul class="bookclub-list">
+                        <li>도전(道典) - 증산도의 경전</li>
+                        <li>이것이 개벽이다 - 개벽 사상의 핵심</li>
+                        <li>증산도의 진리 - 기초 교리서</li>
+                        <li>우주변화의 원리 - 한국의 우주론</li>
+                        <li>춘생추살 - 생명의 순환 원리</li>
+                    </ul>
+
+                    <h3><i class="fas fa-list-check"></i> 학습 프로그램</h3>
+                    <ul class="bookclub-list">
+                        <li><strong>입문 과정</strong>: 증산도 기초 교리 학습</li>
+                        <li><strong>심화 과정</strong>: 도전 읽기와 해설</li>
+                        <li><strong>전문 과정</strong>: 우주론과 철학 깊이 탐구</li>
+                        <li><strong>토론 모임</strong>: 온라인/오프라인 독서 토론</li>
+                    </ul>
+
+                    <h3><i class="fas fa-star"></i> 참여 혜택</h3>
+                    <ul class="bookclub-list">
+                        <li>체계적인 진리 학습 커리큘럼</li>
+                        <li>전국 도생들과의 교류 및 소통</li>
+                        <li>정기 세미나 및 특강 참여</li>
+                        <li>학습 자료 및 강의 영상 제공</li>
+                        <li>개인별 학습 진도 관리</li>
+                    </ul>
+
+                    <h3><i class="fas fa-question-circle"></i> 참여 방법</h3>
+                    <p style="line-height: 1.8; margin-top: 1rem;">
+                        황금독서클럽 웹사이트에 접속하여 회원가입 후 다양한 학습 프로그램에 참여하실 수 있습니다. 
+                        도장 도생이시라면 더욱 깊이 있는 학습과 토론에 참여하실 수 있습니다.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeBookclubInfo()">닫기</button>
+                <a href="https://www.goldenbookclub.net/" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                    <i class="fas fa-external-link-alt"></i> 황금독서클럽 바로가기
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 로그인 모달 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>로그인</h2>
+                <button class="modal-close" onclick="closeLoginModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="loginForm" class="post-form">
+                <div class="form-group">
+                    <label for="loginUsername">아이디</label>
+                    <input type="text" id="loginUsername" placeholder="아이디를 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">비밀번호</label>
+                    <input type="password" id="loginPassword" placeholder="비밀번호를 입력하세요" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeLoginModal()">취소</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> 로그인
+                    </button>
+                </div>
+            </form>
+            <div class="modal-footer" style="text-align: center; padding-top: 1rem; border-top: none;">
+                <p style="color: #6C757D;">계정이 없으신가요? <a href="#" onclick="openRegisterModal(); return false;" style="color: #C8102E; text-decoration: underline;">회원가입</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 회원가입 모달 -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>회원가입</h2>
+                <button class="modal-close" onclick="closeRegisterModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="registerForm" class="post-form">
+                <div class="form-group">
+                    <label for="registerUsername">아이디</label>
+                    <input type="text" id="registerUsername" placeholder="아이디를 입력하세요" required minlength="4">
+                    <small>4자 이상 입력하세요</small>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">비밀번호</label>
+                    <input type="password" id="registerPassword" placeholder="비밀번호를 입력하세요" required minlength="6">
+                    <small>6자 이상 입력하세요</small>
+                </div>
+                <div class="form-group">
+                    <label for="registerPasswordConfirm">비밀번호 확인</label>
+                    <input type="password" id="registerPasswordConfirm" placeholder="비밀번호를 다시 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerName">이름</label>
+                    <input type="text" id="registerName" placeholder="이름을 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPhone">연락처</label>
+                    <input type="tel" id="registerPhone" placeholder="010-1234-5678" required pattern="[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}">
+                    <small>'-'를 포함하여 입력하세요 (예: 010-1234-5678)</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeRegisterModal()">취소</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-user-plus"></i> 가입하기
+                    </button>
+                </div>
+            </form>
+            <div class="modal-footer" style="text-align: center; padding-top: 1rem; border-top: none;">
+                <p style="color: #6C757D;">이미 계정이 있으신가요? <a href="#" onclick="openLoginModal(); return false;" style="color: #C8102E; text-decoration: underline;">로그인</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 상생방송 상세 정보 모달 -->
+    <div id="stbModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>상생방송 편성표 안내</h2>
+                <button class="modal-close" onclick="closeSTBInfo()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="stb-detail">
+                    <h3><i class="fas fa-clock"></i> 주요 프로그램 편성</h3>
+                    <div class="schedule-info">
+                        <p>상생방송은 24시간 다양한 프로그램을 방송합니다.</p>
+                        <ul class="stb-list">
+                            <li><strong>오전 시간대</strong>: 태을주 수행, 아침 예배, 교육 프로그램</li>
+                            <li><strong>오후 시간대</strong>: 역사·문화 다큐멘터리, 특별 강좌</li>
+                            <li><strong>저녁 시간대</strong>: 도전 강독, 천지성공, 생활 건강</li>
+                            <li><strong>심야 시간대</strong>: 주요 프로그램 재방송</li>
+                        </ul>
+                    </div>
+
+                    <h3><i class="fas fa-star"></i> 추천 프로그램</h3>
+                    <ul class="stb-list">
+                        <li><strong>도전 강독</strong>: 증산도 경전 도전을 체계적으로 학습하는 프로그램</li>
+                        <li><strong>천지성공</strong>: 증산도 핵심 진리를 쉽고 명쾌하게 전달</li>
+                        <li><strong>환단고기 북콘서트</strong>: 우리 역사의 진실을 밝히는 역사 강의</li>
+                        <li><strong>개벽실제상황</strong>: 후천개벽의 실제 모습을 다룬 다큐멘터리</li>
+                        <li><strong>생존의 비밀</strong>: 가을개벽기 생존 방법 안내</li>
+                    </ul>
+
+                    <h3><i class="fas fa-desktop"></i> 시청 방법</h3>
+                    <ul class="stb-list">
+                        <li><strong>웹사이트</strong>: www.stb.co.kr 접속하여 실시간 시청</li>
+                        <li><strong>모바일 앱</strong>: 상생방송 앱 다운로드 (iOS/Android)</li>
+                        <li><strong>스마트 TV</strong>: 앱스토어에서 상생방송 앱 설치</li>
+                        <li><strong>케이블/IPTV</strong>: 일부 지역 케이블 TV 채널 시청 가능</li>
+                    </ul>
+
+                    <h3><i class="fas fa-video"></i> VOD 다시보기</h3>
+                    <p style="line-height: 1.8; margin-top: 1rem;">
+                        상생방송 웹사이트에서 방송된 모든 프로그램을 다시보기로 제공합니다. 
+                        프로그램별, 카테고리별로 검색하여 원하는 콘텐츠를 언제든지 시청할 수 있습니다.
+                    </p>
+
+                    <h3><i class="fas fa-calendar-alt"></i> 실시간 편성표</h3>
+                    <p style="line-height: 1.8; margin-top: 1rem;">
+                        정확한 편성표는 상생방송 웹사이트에서 확인하실 수 있습니다. 
+                        오늘의 편성표와 주간 편성표를 제공하며, 관심 프로그램을 미리 확인하고 시청하실 수 있습니다.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeSTBInfo()">닫기</button>
+                <a href="https://www.stb.co.kr/" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                    <i class="fas fa-external-link-alt"></i> 상생방송 바로가기
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 음악 업로드 모달 -->
+    <div id="musicUploadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-upload"></i> 음악 업로드</h2>
+                <button class="modal-close" onclick="closeMusicUploadModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="musicUploadForm" class="modal-body">
+                <div class="form-group">
+                    <label for="musicTitle">곡 제목 *</label>
+                    <input type="text" id="musicTitle" required placeholder="예: 천지성공">
+                </div>
+
+                <div class="form-group">
+                    <label for="musicArtist">작곡/연주자</label>
+                    <input type="text" id="musicArtist" placeholder="예: AI 창작, 김○○">
+                </div>
+
+                <div class="form-group">
+                    <label for="musicCategory">카테고리</label>
+                    <select id="musicCategory">
+                        <option value="AI창작곡">AI 창작곡</option>
+                        <option value="수상곡">수상곡</option>
+                        <option value="태을주">태을주</option>
+                        <option value="찬가">찬가</option>
+                        <option value="기타">기타</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="musicDescription">곡 설명</label>
+                    <textarea id="musicDescription" rows="3" placeholder="이 곡에 대한 간단한 설명을 입력하세요"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="musicUrl">음악 파일 URL *</label>
+                    <input type="url" id="musicUrl" required placeholder="https://example.com/music.mp3">
+                    <small class="form-help">
+                        <i class="fas fa-info-circle"></i> MP3 파일의 직접 링크를 입력하세요
+                        <br><br>
+                        <strong>✅ 추천 서비스:</strong><br>
+                        • <strong>Archive.org</strong> - 무료 무제한, 재생 완벽 지원 ⭐⭐<br>
+                        • <strong>Dropbox</strong> - 안정적, ?dl=1 사용<br>
+                        • <strong>SoundCloud</strong> - 음악 전용<br>
+                        <br>
+                        <strong>⚠️ 네이버 MYBOX 주의:</strong><br>
+                        네이버 MYBOX는 직접 스트리밍을 지원하지 않을 수 있습니다.<br>
+                        재생이 안 되면 Archive.org 또는 Dropbox를 사용하세요.<br>
+                        <br>
+                        <strong>📘 상세 가이드:</strong> MUSIC_HOSTING_GUIDE.md 참조
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="musicThumbnail">앨범 커버 이미지 URL</label>
+                    <input type="url" id="musicThumbnail" placeholder="https://example.com/cover.jpg">
+                    <small class="form-help">
+                        <i class="fas fa-info-circle"></i> 선택사항: 앨범 커버 이미지 URL
+                    </small>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeMusicUploadModal()">
+                        <i class="fas fa-times"></i> 취소
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-upload"></i> 업로드
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/music-player.js"></script>
+</body>
+</html>
