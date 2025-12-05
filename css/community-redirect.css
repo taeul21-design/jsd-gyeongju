@@ -1,1 +1,184 @@
+/* ===========================
+   커뮤니티 리다이렉트 섹션
+   =========================== */
+.community-redirect-section {
+    background: linear-gradient(135deg, #FFF8F0, #FFE5CC);
+    padding: var(--spacing-xl) 0;
+}
+
+.community-redirect-card {
+    background: var(--white);
+    border-radius: 25px;
+    padding: var(--spacing-xl);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    border: 3px solid var(--primary-color);
+}
+
+.redirect-icon {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, var(--primary-color), #A00D25);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+    font-size: 4rem;
+    color: var(--white);
+    box-shadow: 0 10px 30px rgba(200, 16, 46, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.community-redirect-card h3 {
+    font-size: 2rem;
+    color: var(--secondary-color);
+    margin-bottom: var(--spacing-sm);
+    font-weight: 700;
+}
+
+.community-redirect-card > p {
+    font-size: 1.1rem;
+    color: var(--gray-600);
+    line-height: 1.8;
+    margin-bottom: var(--spacing-lg);
+}
+
+.btn-redirect {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 1.2rem 3rem;
+    background: linear-gradient(135deg, var(--primary-color), #A00D25);
+    color: var(--white);
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    box-shadow: 0 6px 20px rgba(200, 16, 46, 0.3);
+    transition: var(--transition);
+    margin-bottom: var(--spacing-lg);
+}
+
+.btn-redirect:hover {
+    background: linear-gradient(135deg, #A00D25, var(--primary-color));
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(200, 16, 46, 0.4);
+}
+
+.btn-redirect i {
+    font-size: 1.1rem;
+}
+
+.redirect-features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: var(--light-bg);
+    border-radius: 15px;
+}
+
+.redirect-feature {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: var(--spacing-sm);
+    background: var(--white);
+    border-radius: 10px;
+    text-align: left;
+    border: 2px solid transparent;
+    transition: var(--transition);
+}
+
+.redirect-feature:hover {
+    border-color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+.redirect-feature i {
+    font-size: 1.5rem;
+    color: var(--success-color);
+    flex-shrink: 0;
+}
+
+.redirect-feature span {
+    font-weight: 600;
+    color: var(--dark-color);
+    font-size: 1rem;
+}
+
+.contact-alternative {
+    padding-top: var(--spacing-md);
+    border-top: 2px solid var(--gray-200);
+}
+
+.contact-alternative h4 {
+    color: var(--secondary-color);
+    font-size: 1.3rem;
+    margin-bottom: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.contact-alternative h4 i {
+    color: var(--primary-color);
+}
+
+.contact-alternative p {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    font-weight: 700;
+    margin: var(--spacing-xs) 0;
+}
+
+.contact-note {
+    font-size: 0.9rem !important;
+    color: var(--gray-600) !important;
+    font-weight: 400 !important;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .redirect-icon {
+        width: 100px;
+        height: 100px;
+        font-size: 3rem;
+    }
+    
+    .community-redirect-card h3 {
+        font-size: 1.6rem;
+    }
+    
+    .community-redirect-card > p {
+        font-size: 1rem;
+    }
+    
+    .btn-redirect {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+    }
+    
+    .redirect-feature span {
+        font-size: 0.95rem;
+    }
+    
+    .contact-alternative p {
+        font-size: 1.3rem;
+    }
+}
 
