@@ -561,6 +561,40 @@ img {
     margin-bottom: 0;
 }
 
+/* 준비 중 버튼 스타일 */
+.btn-coming-soon {
+    background: linear-gradient(135deg, var(--gray-600), var(--gray-800)) !important;
+    cursor: not-allowed;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-coming-soon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+.btn-coming-soon:hover {
+    background: linear-gradient(135deg, var(--gray-800), var(--gray-600)) !important;
+    transform: none !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .community-features {
