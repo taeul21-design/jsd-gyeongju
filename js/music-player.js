@@ -11,6 +11,14 @@
 // 음악 목록 로드
 // ===========================
 async function loadMusic() {
+    // 정적 모드인 경우 기본 음악 목록 사용
+    if (typeof STATIC_MODE !== 'undefined' && STATIC_MODE === true) {
+        console.log('🎵 정적 모드: 기본 음악 목록 로드');
+        allMusic = getDefaultMusicList();
+        renderMusicList();
+        return;
+    }
+    
     try {
         const response = await fetch('tables/music?limit=1000&sort=-created_at');
         if (!response.ok) throw new Error('음악 목록을 불러올 수 없습니다.');
@@ -24,14 +32,69 @@ async function loadMusic() {
         
     } catch (error) {
         console.error('음악 로드 오류:', error);
-        document.getElementById('musicItems').innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-exclamation-circle fa-3x" style="color: var(--primary-color);"></i>
-                <p>음악 목록을 불러오는데 실패했습니다.</p>
-                <p style="font-size: 0.9rem; color: var(--gray-600);">${error.message}</p>
-            </div>
-        `;
+        // 에러 발생 시 기본 목록으로 폴백
+        console.log('⚠️ API 실패, 기본 음악 목록 사용');
+        allMusic = getDefaultMusicList();
+        renderMusicList();
     }
+}
+
+// ===========================
+// 기본 음악 목록 (정적 모드용)
+// ===========================
+function getDefaultMusicList() {
+    return [
+        {
+            id: 'music-001',
+            title: '천지성공',
+            artist: '증산도',
+            category: '성곡',
+            audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+            thumbnail_url: '',
+            published: true,
+            created_at: Date.now()
+        },
+        {
+            id: 'music-002',
+            title: '개벽의 노래',
+            artist: '증산도',
+            category: '성곡',
+            audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+            thumbnail_url: '',
+            published: true,
+            created_at: Date.now() - 1000
+        },
+        {
+            id: 'music-003',
+            title: '태을주 수행곡',
+            artist: '증산도',
+            category: '수행',
+            audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+            thumbnail_url: '',
+            published: true,
+            created_at: Date.now() - 2000
+        },
+        {
+            id: 'music-004',
+            title: '상생의 길',
+            artist: '증산도',
+            category: '성곡',
+            audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+            thumbnail_url: '',
+            published: true,
+            created_at: Date.now() - 3000
+        },
+        {
+            id: 'music-005',
+            title: '후천개벽가',
+            artist: '증산도',
+            category: '성곡',
+            audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+            thumbnail_url: '',
+            published: true,
+            created_at: Date.now() - 4000
+        }
+    ];
 }
 
 // ===========================
@@ -54,8 +117,8 @@ function renderMusicList() {
         return;
     }
     
-    // 관리자 권한 확인
-    const isAdmin = currentUser && (currentUser.is_admin || currentUser.username === 'taeul21');
+    // 관리자 권한 확인 (정적 모드에서는 편집 기능 비활성화)
+    const isAdmin = !STATIC_MODE && currentUser && (currentUser.is_admin || currentUser.username === 'taeul21');
     
     container.innerHTML = allMusic.map(music => {
         const isPlaying = currentMusicId === music.id;
@@ -467,6 +530,12 @@ document.addEventListener('DOMContentLoaded', () => {
 function updateMusicUploadButton() {
     const uploadSection = document.getElementById('musicUploadSection');
     if (!uploadSection) return;
+    
+    // 정적 모드에서는 업로드 버튼 숨김
+    if (typeof STATIC_MODE !== 'undefined' && STATIC_MODE === true) {
+        uploadSection.style.display = 'none';
+        return;
+    }
     
     // admin 또는 taeul21만 업로드 버튼 표시
     if (currentUser && (currentUser.is_admin || currentUser.username === 'taeul21')) {
