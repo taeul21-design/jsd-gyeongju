@@ -951,7 +951,7 @@ function setupNavigation() {
 // 카테고리 필터
 // ===========================
 function setupCategoryFilters() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
+    const filterButtons = document.querySelectorAll('.category-btn');
     
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -962,7 +962,13 @@ function setupCategoryFilters() {
             // 카테고리 변경 및 게시글 재로드
             currentCategory = button.getAttribute('data-category');
             currentPage = 1;
-            loadPosts();
+            
+            // 정적 모드에서는 로컬 데이터 필터링
+            if (STATIC_MODE) {
+                displayPosts();
+            } else {
+                loadPosts();
+            }
             
             // 카테고리별 글쓰기 버튼 표시
             updateCategoryWriteButton(currentCategory);
@@ -972,62 +978,274 @@ function setupCategoryFilters() {
 
 // 카테고리별 글쓰기 버튼 표시 업데이트
 function updateCategoryWriteButton(category) {
-    const categoryWriteBtn = document.getElementById('categoryWriteBtn');
-    if (!categoryWriteBtn) return;
+    const postWriteSection = document.getElementById('postWriteSection');
+    if (!postWriteSection) return;
+    
+    // 정적 모드에서는 글쓰기 버튼 숨김
+    if (STATIC_MODE) {
+        postWriteSection.style.display = 'none';
+        return;
+    }
     
     // 로그인하지 않았거나 "전체" 카테고리면 숨김
     if (!currentUser || category === 'all') {
-        categoryWriteBtn.style.display = 'none';
+        postWriteSection.style.display = 'none';
         return;
     }
     
     // 공지사항은 관리자 또는 특정 회원만 가능
-    if (category === '공지사항') {
+    if (category === 'notice') {
         if (currentUser.is_admin || currentUser.username === 'taeul21') {
-            categoryWriteBtn.style.display = 'block';
+            postWriteSection.style.display = 'block';
         } else {
-            categoryWriteBtn.style.display = 'none';
+            postWriteSection.style.display = 'none';
         }
     } 
     // 다른 카테고리는 모든 로그인 사용자 가능
     else {
-        categoryWriteBtn.style.display = 'block';
+        postWriteSection.style.display = 'block';
     }
+}
+
+// ===========================
+// 로컬 저장소 게시판 관리 (정적 모드용)
+// ===========================
+function loadPostsFromLocal() {
+    try {
+        const stored = localStorage.getItem('posts_data');
+        allPosts = stored ? JSON.parse(stored) : getSamplePosts();
+        
+        // 저장된 데이터가 없으면 샘플 데이터 저장
+        if (!stored) {
+            savePostsToLocal();
+        }
+        
+        displayPosts();
+        console.log(`✅ 로컬 게시판 로드: ${allPosts.length}개`);
+    } catch (error) {
+        console.error('로컬 게시판 로드 실패:', error);
+        allPosts = getSamplePosts();
+        displayPosts();
+    }
+}
+
+function savePostsToLocal() {
+    try {
+        localStorage.setItem('posts_data', JSON.stringify(allPosts));
+        console.log('✅ 로컬 게시판 저장 완료');
+    } catch (error) {
+        console.error('로컬 게시판 저장 실패:', error);
+    }
+}
+
+function addPostToLocal(post) {
+    const newPost = {
+        id: 'post_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+        title: post.title,
+        content: post.content,
+        category: post.category,
+        author: post.author || (currentUser ? currentUser.name : '익명'),
+        author_id: post.author_id || (currentUser ? currentUser.id : null),
+        views: 0,
+        published: true,
+        created_at: Date.now(),
+        ...post
+    };
+    
+    allPosts.unshift(newPost);
+    savePostsToLocal();
+    displayPosts();
+    
+    return newPost;
+}
+
+function getSamplePosts() {
+    return [
+        {
+            id: 'post_001',
+            title: '증산도 경주 노서도장을 소개합니다',
+            content: '안녕하세요. 증산도 경주 노서도장입니다. 후천가을 문명시대를 준비하는 도량으로 여러분을 초대합니다.',
+            category: 'notice',
+            author: '관리자',
+            author_id: 'admin',
+            views: 152,
+            published: true,
+            created_at: Date.now() - 86400000 * 7
+        },
+        {
+            id: 'post_002',
+            title: '정기 치성 안내',
+            content: '매주 일요일 오전 10시 30분, 수요일 저녁 7시 30분에 정기 치성이 있습니다. 많은 참여 바랍니다.',
+            category: 'dojang',
+            author: '관리자',
+            author_id: 'admin',
+            views: 98,
+            published: true,
+            created_at: Date.now() - 86400000 * 3
+        },
+        {
+            id: 'post_003',
+            title: '태을주 수행 모임',
+            content: '매주 토요일 오후 2시 태을주 수행 모임이 있습니다. 초보자도 환영합니다.',
+            category: 'dojang',
+            author: '관리자',
+            author_id: 'admin',
+            views: 76,
+            published: true,
+            created_at: Date.now() - 86400000 * 2
+        }
+    ];
+}
+
+function displayPosts() {
+    const container = document.getElementById('postsContainer');
+    if (!container) return;
+    
+    // 카테고리 필터링
+    let filteredPosts = allPosts;
+    if (currentCategory && currentCategory !== 'all') {
+        filteredPosts = allPosts.filter(post => post.category === currentCategory);
+    }
+    
+    // 게시 여부 필터링
+    filteredPosts = filteredPosts.filter(post => post.published === true);
+    
+    if (filteredPosts.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-newspaper fa-3x"></i>
+                <p>게시글이 없습니다.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // 게시글 카드 생성
+    container.innerHTML = filteredPosts.map(post => createPostCardHTML(post)).join('');
+}
+
+function createPostCardHTML(post) {
+    const date = new Date(post.created_at);
+    const dateStr = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+    
+    const categoryInfo = {
+        'notice': { icon: 'bullhorn', color: '#C8102E', label: '공지사항' },
+        'dojang': { icon: 'home', color: '#1976D2', label: '도장소식' },
+        'event': { icon: 'calendar-alt', color: '#FF9800', label: '행사사진' },
+        'free': { icon: 'comment-dots', color: '#4CAF50', label: '자유게시판' }
+    };
+    
+    const catInfo = categoryInfo[post.category] || { icon: 'file', color: '#666', label: '기타' };
+    
+    return `
+        <div class="post-card" onclick="viewPost('${post.id}')">
+            <div class="post-category" style="background: ${catInfo.color};">
+                <i class="fas fa-${catInfo.icon}"></i> ${catInfo.label}
+            </div>
+            <h3 class="post-title">${post.title}</h3>
+            <p class="post-excerpt">${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}</p>
+            <div class="post-meta">
+                <span><i class="fas fa-user"></i> ${post.author}</span>
+                <span><i class="fas fa-calendar"></i> ${dateStr}</span>
+                <span><i class="fas fa-eye"></i> ${post.views || 0}</span>
+            </div>
+        </div>
+    `;
+}
+
+// 게시글 상세보기
+function viewPost(postId) {
+    const post = allPosts.find(p => p.id === postId);
+    if (!post) {
+        alert('게시글을 찾을 수 없습니다.');
+        return;
+    }
+    
+    // 조회수 증가
+    post.views = (post.views || 0) + 1;
+    if (STATIC_MODE) {
+        savePostsToLocal();
+    }
+    
+    const categoryInfo = {
+        'notice': { icon: 'bullhorn', color: '#C8102E', label: '공지사항' },
+        'dojang': { icon: 'home', color: '#1976D2', label: '도장소식' },
+        'event': { icon: 'calendar-alt', color: '#FF9800', label: '행사사진' },
+        'free': { icon: 'comment-dots', color: '#4CAF50', label: '자유게시판' }
+    };
+    
+    const catInfo = categoryInfo[post.category] || { icon: 'file', color: '#666', label: '기타' };
+    const date = new Date(post.created_at);
+    const dateStr = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    
+    // 모달 표시
+    const modalHTML = `
+        <div class="modal show" id="postViewModal" onclick="if(event.target === this) closePostViewModal()">
+            <div class="modal-content" style="max-width: 800px;">
+                <div class="modal-header">
+                    <span class="post-category" style="background: ${catInfo.color}; padding: 0.5rem 1rem; border-radius: 20px; color: white; font-size: 0.9rem; display: inline-block; margin-bottom: 1rem;">
+                        <i class="fas fa-${catInfo.icon}"></i> ${catInfo.label}
+                    </span>
+                    <h2 style="margin: 0.5rem 0; word-break: keep-all;">${post.title}</h2>
+                    <div class="post-meta" style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
+                        <span><i class="fas fa-user"></i> ${post.author}</span>
+                        <span style="margin: 0 1rem;">|</span>
+                        <span><i class="fas fa-calendar"></i> ${dateStr}</span>
+                        <span style="margin: 0 1rem;">|</span>
+                        <span><i class="fas fa-eye"></i> ${post.views}</span>
+                    </div>
+                    <button class="btn-close" onclick="closePostViewModal()">&times;</button>
+                </div>
+                <div class="modal-body" style="padding: 2rem; line-height: 1.8; white-space: pre-wrap; word-break: keep-all;">
+                    ${post.content}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="closePostViewModal()">
+                        <i class="fas fa-times"></i> 닫기
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.body.style.overflow = 'hidden';
+}
+
+function closePostViewModal() {
+    const modal = document.getElementById('postViewModal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+        
+        // 목록 새로고침 (조회수 반영)
+        if (STATIC_MODE) {
+            displayPosts();
+        }
+    }
+}
+
+// 게시글 작성 모달 열기
+function openPostModal() {
+    if (!currentUser) {
+        alert('로그인이 필요합니다.');
+        showLoginModal();
+        return;
+    }
+    
+    alert('게시글 작성 기능은 준비 중입니다.\n\n문의: 054-742-1691');
 }
 
 // ===========================
 // 게시글 로드
 // ===========================
 async function loadPosts() {
-    const postsContainer = document.getElementById('postsList');
-    const loadingElement = document.getElementById('loading');
-    const paginationElement = document.getElementById('pagination');
+    const postsContainer = document.getElementById('postsContainer');
     
-    // 정적 모드에서는 게시판 비활성화
+    // 정적 모드에서는 로컬 저장소 사용
     if (STATIC_MODE) {
-        console.log('🌐 정적 모드: 게시판 기능 비활성화');
-        if (loadingElement) loadingElement.style.display = 'none';
-        if (postsContainer) {
-            postsContainer.innerHTML = `
-                <div style="text-align: center; padding: 3rem; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <i class="fas fa-info-circle" style="font-size: 3rem; color: #1976D2; margin-bottom: 1rem;"></i>
-                    <h3 style="margin-bottom: 1rem; color: #333;">게시판은 현재 준비 중입니다</h3>
-                    <p style="color: #666; margin-bottom: 1.5rem;">
-                        도장 소식은 아래 연락처로 문의하시거나<br>
-                        증산도 공식 홈페이지를 방문해 주세요.
-                    </p>
-                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <a href="tel:054-742-1691" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #C8102E; color: white; text-decoration: none; border-radius: 8px; font-weight: 500;">
-                            <i class="fas fa-phone"></i> 전화 문의
-                        </a>
-                        <a href="https://www.jsd.or.kr/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #1976D2; color: white; text-decoration: none; border-radius: 8px; font-weight: 500;">
-                            <i class="fas fa-external-link-alt"></i> 증산도 홈페이지
-                        </a>
-                    </div>
-                </div>
-            `;
-        }
-        if (paginationElement) paginationElement.innerHTML = '';
+        console.log('🌐 정적 모드: 게시판 로컬 저장소 사용');
+        loadPostsFromLocal();
         return;
     }
     
@@ -1843,32 +2061,92 @@ const guestbookPerPage = 10;
 let allGuestbook = [];
 let currentSort = 'latest';
 
+// ===========================
+// 로컬 저장소 방명록 관리 (정적 모드용)
+// ===========================
+function loadGuestbookFromLocal() {
+    try {
+        const stored = localStorage.getItem('guestbook_data');
+        allGuestbook = stored ? JSON.parse(stored) : [];
+        
+        // 정렬 적용
+        sortGuestbook(currentSort);
+        
+        // 카운트 업데이트
+        const countElement = document.getElementById('guestbookCount');
+        if (countElement) {
+            countElement.textContent = `(${allGuestbook.length})`;
+        }
+        
+        console.log(`✅ 로컬 방명록 로드: ${allGuestbook.length}개`);
+    } catch (error) {
+        console.error('로컬 방명록 로드 실패:', error);
+        allGuestbook = [];
+        displayGuestbook();
+    }
+}
+
+function saveGuestbookToLocal() {
+    try {
+        localStorage.setItem('guestbook_data', JSON.stringify(allGuestbook));
+        console.log('✅ 로컬 방명록 저장 완료');
+    } catch (error) {
+        console.error('로컬 방명록 저장 실패:', error);
+    }
+}
+
+function addGuestbookToLocal(entry) {
+    const newEntry = {
+        id: 'gb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+        name: entry.name,
+        email: entry.email || '',
+        location: entry.location || '',
+        message: entry.message,
+        likes: 0,
+        created_at: Date.now(),
+        ...entry
+    };
+    
+    allGuestbook.unshift(newEntry);
+    saveGuestbookToLocal();
+    sortGuestbook(currentSort);
+    
+    // 카운트 업데이트
+    const countElement = document.getElementById('guestbookCount');
+    if (countElement) {
+        countElement.textContent = `(${allGuestbook.length})`;
+    }
+    
+    return newEntry;
+}
+
+function updateGuestbookLikes(entryId) {
+    const entry = allGuestbook.find(e => e.id === entryId);
+    if (entry) {
+        // 로컬 스토리지에서 좋아요 기록 확인
+        const likedKey = `guestbook_liked_${entryId}`;
+        const hasLiked = localStorage.getItem(likedKey);
+        
+        if (hasLiked) {
+            alert('이미 추천하셨습니다.');
+            return false;
+        }
+        
+        entry.likes = (entry.likes || 0) + 1;
+        localStorage.setItem(likedKey, 'true');
+        saveGuestbookToLocal();
+        displayGuestbook();
+        return true;
+    }
+    return false;
+}
+
 // 방명록 로드
 async function loadGuestbook(page = 1) {
-    // 정적 모드에서는 방명록 비활성화
+    // 정적 모드에서는 localStorage를 사용한 로컬 저장
     if (STATIC_MODE) {
-        console.log('🌐 정적 모드: 방명록 기능 비활성화');
-        const guestbookList = document.getElementById('guestbookList');
-        if (guestbookList) {
-            guestbookList.innerHTML = `
-                <div style="text-align: center; padding: 3rem; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <i class="fas fa-info-circle" style="font-size: 3rem; color: #1976D2; margin-bottom: 1rem;"></i>
-                    <h3 style="margin-bottom: 1rem; color: #333;">방명록은 현재 준비 중입니다</h3>
-                    <p style="color: #666; margin-bottom: 1.5rem;">
-                        방문 소감이나 문의사항이 있으시면<br>
-                        아래 연락처로 직접 연락 주시기 바랍니다.
-                    </p>
-                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <a href="tel:054-742-1691" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #C8102E; color: white; text-decoration: none; border-radius: 8px; font-weight: 500;">
-                            <i class="fas fa-phone"></i> 054-742-1691
-                        </a>
-                        <a href="https://welcome.jsd.or.kr/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #1976D2; color: white; text-decoration: none; border-radius: 8px; font-weight: 500;">
-                            <i class="fas fa-external-link-alt"></i> 증산도 알아보기
-                        </a>
-                    </div>
-                </div>
-            `;
-        }
+        console.log('🌐 정적 모드: 방명록 로컬 저장소 사용');
+        loadGuestbookFromLocal();
         return;
     }
     
@@ -1938,7 +2216,7 @@ async function loadGuestbook(page = 1) {
 
 // 방명록 표시
 function displayGuestbook() {
-    const container = document.getElementById('guestbookList');
+    const container = document.getElementById('guestbookItems');
     
     if (!container) {
         console.error('방명록 컨테이너를 찾을 수 없습니다.');
@@ -2043,19 +2321,31 @@ async function submitGuestbook(event) {
     try {
         const guestbookData = {
             name: name,
+            email: email,
+            location: location,
             message: message,
-            likes: 0,
-            published: true
+            likes: 0
         };
         
-        // 선택 필드는 값이 있을 때만 추가
-        if (email) {
-            guestbookData.email = email;
+        // 정적 모드에서는 로컬 저장소에 저장
+        if (STATIC_MODE) {
+            addGuestbookToLocal(guestbookData);
+            alert('✅ 방명록이 성공적으로 등록되었습니다!');
+            
+            // 폼 초기화
+            document.getElementById('guestbookForm').reset();
+            document.getElementById('charCount').textContent = '0';
+            
+            // 방명록 섹션으로 스크롤
+            const guestbookItems = document.getElementById('guestbookItems');
+            if (guestbookItems) {
+                guestbookItems.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            return;
         }
         
-        if (location) {
-            guestbookData.location = location;
-        }
+        // API 모드 (원래 코드)
+        guestbookData.published = true;
         
         if (currentUser && currentUser.id) {
             guestbookData.user_id = currentUser.id;
@@ -2082,7 +2372,7 @@ async function submitGuestbook(event) {
             console.log('방명록 등록 성공:', result);
             
             // 성공 메시지
-            showSuccessToast('방명록이 성공적으로 등록되었습니다! 💚');
+            alert('✅ 방명록이 성공적으로 등록되었습니다!');
             
             // 폼 초기화
             document.getElementById('guestbookForm').reset();
@@ -2135,6 +2425,15 @@ function sortGuestbook(sortType) {
 
 // 좋아요 토글
 async function toggleLike(entryId, currentLikes) {
+    // 정적 모드에서는 로컬 저장소 사용
+    if (STATIC_MODE) {
+        if (updateGuestbookLikes(entryId)) {
+            console.log('✅ 좋아요 업데이트 완료');
+        }
+        return;
+    }
+    
+    // API 모드
     const likedEntries = JSON.parse(localStorage.getItem('likedGuestbook') || '[]');
     const isLiked = likedEntries.includes(entryId);
     
